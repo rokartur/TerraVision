@@ -12,8 +12,6 @@ namespace TerraVision
         public Register()
         {
             InitializeComponent();
-            this.StartPosition = FormStartPosition.CenterScreen;
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
         }
         private void DeleteAllUsersButton_Click(object sender, EventArgs e)
         {

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
 using System.Windows.Forms;
 using Newtonsoft.Json;
-using TerraVision.Models;
 
 namespace TerraVision
 {
@@ -12,10 +10,7 @@ namespace TerraVision
         public Login()
         {
             InitializeComponent();
-            this.StartPosition = FormStartPosition.CenterScreen;
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
         }
-
         private void LoginButton_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
@@ -42,18 +37,18 @@ namespace TerraVision
             var loggedInUserPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "loggedInUser.json");
             var serializedData = JsonConvert.SerializeObject(user);
             File.WriteAllText(loggedInUserPath, serializedData);
-
-            var mapForm = new Map(user);
-            mapForm.Show();
-            this.Hide();
+            
+            IFormHandler formHandler = new Map(user);
+            formHandler.ShowForm();
+            HideForm();
             Cursor.Current = Cursors.Default;
         }
 
         private void SwitchToRegisterButton_Click(object sender, EventArgs e)
         {
-            this.Hide();
-            var registerForm = new Register();
-            registerForm.Show();
+            HideForm();
+            IFormHandler formHandler = new Register();
+            formHandler.ShowForm();
         }
     }
 }

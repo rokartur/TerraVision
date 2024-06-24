@@ -9,10 +9,28 @@ using System.Text;
 
 namespace TerraVision
 {
-    public class UtilsForm : Form
+    public class UtilsForm : Form, IFormHandler
     {
         protected readonly string DataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "users.json");
 
+        protected UtilsForm()
+        {
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            
+            if (!Directory.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data")))
+            {
+                Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data"));
+            }
+        }
+        public void ShowForm()
+        {
+            this.Show();
+        }
+        public void HideForm()
+        {
+            this.Hide();
+        }
         protected List<User> LoadUsers()
         {
             if (!File.Exists(DataPath)) return new List<User>();
