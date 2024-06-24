@@ -9,7 +9,7 @@ using System.Text;
 
 namespace TerraVision
 {
-    public class CustomForm : Form
+    public class UtilsForm : Form
     {
         protected readonly string DataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "users.json");
 

@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace TerraVision
 {
-    public partial class Register : CustomForm
+    public partial class Register : UtilsForm
     {
         public Register()
         {

@@ -89,6 +89,8 @@
     <Compile Include="CountryInfo.Designer.cs">
       <DependentUpon>CountryInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="CountryService.cs" />
+    <Compile Include="ICountryService.cs" />
     <Compile Include="Login.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -119,7 +121,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CustomForm.cs" />
+    <Compile Include="UtilsForm.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

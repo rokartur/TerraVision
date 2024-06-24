@@ -2,9 +2,9 @@
 
 namespace TerraVision.Models
 {
-    public class Continent
+    public class Continent : IContinent
     {
         public string Name { get; set; }
-        public List<Country> Countries { get; set; }
+        public List<ICountry> Countries { get; set; }
     }
 }

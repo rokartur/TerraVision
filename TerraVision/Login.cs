@@ -7,7 +7,7 @@ using TerraVision.Models;
 
 namespace TerraVision
 {
-    public partial class Login : CustomForm
+    public partial class Login : UtilsForm
     {
         public Login()
         {

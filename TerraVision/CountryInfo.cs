@@ -6,7 +6,7 @@ using TerraVision.Models;
 
 namespace TerraVision
 {
-    public partial class CountryInfo : Form
+    public partial class CountryInfo : UtilsForm
     {
         private readonly PictureBox _flagPictureBox;
         private readonly TextBox _nameTextBox;
@@ -117,7 +117,7 @@ namespace TerraVision
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
         }
 
-        public async void ShowCountryInfo(Country country)
+        public async void ShowCountryInfo(ICountry country)
         {
             using (var client = new HttpClient())
             {
