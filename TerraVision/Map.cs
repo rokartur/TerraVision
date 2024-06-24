@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,6 +17,8 @@ namespace TerraVision
 {
     public partial class Map : CustomForm
     {
+        private readonly Panel _leftContainer;
+        private readonly ListView _countryList;
         private readonly GMapControl _gmap;
         private readonly HttpClient _httpClient;
         private readonly ComboBox _searchBox;
@@ -30,21 +35,40 @@ namespace TerraVision
             
             _httpClient = new HttpClient();
 
+            _leftContainer = new Panel();
+            _leftContainer.Dock = DockStyle.Left;
+            _leftContainer.Padding = new Padding(10);
+            _leftContainer.Width = this.Width / 5;
+            _leftContainer.BackColor = Color.White;
+            Controls.Add(_leftContainer);
+            
+            _countryList = new ListView();
+            _countryList.Dock = DockStyle.Fill;
+            _countryList.View = View.Details;
+            _countryList.HeaderStyle = ColumnHeaderStyle.Nonclickable;
+            var flagColumn = _countryList.Columns.Add("Flag");
+            flagColumn.Width = 32;
+            var countryColumn = _countryList.Columns.Add("Country");
+            countryColumn.Width = 152;
+            _leftContainer.Controls.Add(_countryList);
+            
+            LoadCountries();
+            
+            var rightContainer = new Panel();
+            rightContainer.Dock = DockStyle.Right;
+            rightContainer.Padding = new Padding(10);
+            rightContainer.Width = this.Width / 5;
+            rightContainer.BackColor = Color.White;
+            Controls.Add(rightContainer);
+                
             _gmap = new GMapControl();
             _gmap.Dock = DockStyle.Fill;
             Controls.Add(_gmap);
-
-            var container = new Panel();
-            container.Dock = DockStyle.Right;
-            container.Padding = new Padding(10);
-            container.Width = this.Width / 5;
-            container.BackColor = Color.White;
-            Controls.Add(container);
-
+            
             var sidebar = new Panel();
             sidebar.Dock = DockStyle.Fill;
             sidebar.BackColor = Color.White;
-            container.Controls.Add(sidebar);
+            rightContainer.Controls.Add(sidebar);
             
             var logoutButton = new Button();
             logoutButton.Text = "Logout";
@@ -106,6 +130,43 @@ namespace TerraVision
             var login = new Login();
             login.Show();
             this.Close();
+        }
+        private async Task LoadCountries()
+        {
+            Cursor.Current = Cursors.WaitCursor;
+            var allCountriesResponse = await _httpClient.GetStringAsync("https://restcountries.com/v3.1/all");
+            var allCountriesData = JArray.Parse(allCountriesResponse);
+
+            var countryNames = new List<string>();
+            var countryFlags = new List<string>();
+            for (int i = 0; i < allCountriesData.Count; i++)
+            {
+                var countryName = allCountriesData[i]["name"]?["common"]?.ToString();
+                var countryFlag = allCountriesData[i]["flags"]?["png"]?.ToString();
+                countryNames.Add(countryName);
+                countryFlags.Add(countryFlag);
+            }
+
+            var sortedCountries = countryNames.Zip(countryFlags, (name, flag) => new { Name = name, Flag = flag })
+                .OrderBy(country => country.Name)
+                .ToList();
+
+            var imageList = new ImageList();
+            for (int i = 0; i < sortedCountries.Count; i++)
+            {
+                var request = WebRequest.Create(sortedCountries[i].Flag);
+
+                using (var response = request.GetResponse())
+                using (var stream = response.GetResponseStream())
+                {
+                    imageList.Images.Add(Image.FromStream(stream));
+                }
+
+                _countryList.Items.Add(new ListViewItem(new[] { "", sortedCountries[i].Name }) { ImageIndex = imageList.Images.Count - 1 });
+            }
+
+            _countryList.SmallImageList = imageList;
+            Cursor.Current = Cursors.Default;
         }
         private async Task<Country> GetCountryInfoByItude(double lat, double lng)
         {
