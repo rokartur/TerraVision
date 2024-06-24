@@ -32,6 +32,7 @@ namespace TerraVision
             this.CenterToScreen();
             var users = LoadUsers();
             var initUser = users.Find(u => u.Username == loggedInUser.Username);
+            Cursor.Current = Cursors.WaitCursor;
             
             _httpClient = new HttpClient();
 
@@ -54,6 +55,26 @@ namespace TerraVision
             
             LoadCountries();
             
+            _countryList.MouseClick += async (sender, e) =>
+            {
+                var hitTest = _countryList.HitTest(e.Location);
+                if (hitTest.Item != null && (hitTest.Item.SubItems[0] == hitTest.SubItem || hitTest.Item.SubItems[1] == hitTest.SubItem))
+                {
+                    var countryName = hitTest.Item.SubItems[1].Text;
+                    var country = await SearchCountry(countryName);
+
+                    if (country == null)
+                    {
+                        MessageBox.Show("Country not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    var countryInfoForm = new CountryInfo();
+                    countryInfoForm.ShowCountryInfo(country);
+                    countryInfoForm.ShowDialog();
+                }
+            };
+            
             var rightContainer = new Panel();
             rightContainer.Dock = DockStyle.Right;
             rightContainer.Padding = new Padding(10);
@@ -75,6 +96,25 @@ namespace TerraVision
             logoutButton.Dock = DockStyle.Bottom;
             logoutButton.Click += LogoutButton_Click;
             sidebar.Controls.Add(logoutButton);
+            
+            var searchButton = new Button();
+            searchButton.Text = "Szukaj";
+            searchButton.Dock = DockStyle.Top;
+            searchButton.Click += async (sender, e) =>
+            {
+                var country = await SearchCountry(_searchBox.Text);
+
+                if (country == null)
+                {
+                    MessageBox.Show("Country not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                var countryInfoForm = new CountryInfo();
+                countryInfoForm.ShowCountryInfo(country);
+                countryInfoForm.ShowDialog();
+            };
+            sidebar.Controls.Add(searchButton);
             
             _searchBox = new ComboBox();
             _searchBox.Dock = DockStyle.Top;
@@ -133,7 +173,6 @@ namespace TerraVision
         }
         private async Task LoadCountries()
         {
-            Cursor.Current = Cursors.WaitCursor;
             var allCountriesResponse = await _httpClient.GetStringAsync("https://restcountries.com/v3.1/all");
             var allCountriesData = JArray.Parse(allCountriesResponse);
 
