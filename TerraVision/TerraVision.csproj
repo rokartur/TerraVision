@@ -104,6 +104,7 @@
     <Compile Include="Models\Continent.cs" />
     <Compile Include="Models\Country.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\Weather.cs" />
     <Compile Include="Register.cs">
       <SubType>Form</SubType>
     </Compile>

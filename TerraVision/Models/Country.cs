@@ -16,9 +16,6 @@
         public string[] Timezones { get; set; }
         public double Lat { get; set; }
         public double Lng { get; set; }
-        public string TemperatureUnit { get; set; }
-        public string SpeedUnit { get; set; }
-        public double CurrentTemperature { get; set; }
-        public double CurrentWindSpeed { get; set; }
+        public Weather CurrentWeather { get; set; } 
     }
 }

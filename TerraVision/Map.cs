@@ -198,7 +198,9 @@ namespace TerraVision
                 using (var response = request.GetResponse())
                 using (var stream = response.GetResponseStream())
                 {
-                    imageList.Images.Add(Image.FromStream(stream));
+                    var originalImage = Image.FromStream(stream);
+                    var flagImage = originalImage.GetThumbnailImage(28, 16, null, IntPtr.Zero);
+                    imageList.Images.Add(flagImage);
                 }
 
                 _countryList.Items.Add(new ListViewItem(new[] { "", sortedCountries[i].Name }) { ImageIndex = imageList.Images.Count - 1 });
@@ -248,6 +250,14 @@ namespace TerraVision
             var currentTemperature = Convert.ToDouble(countryWeatherData["current"]["temperature_2m"]);
             var currentWindSpeed = Convert.ToDouble(countryWeatherData["current"]["wind_speed_10m"]);
 
+            var weather = new Weather
+            {
+                TemperatureUnit = temperatureUnit,
+                SpeedUnit = speedUnit,
+                CurrentTemperature = currentTemperature,
+                CurrentWindSpeed = currentWindSpeed
+            };
+            
             var newCountry = new Country()
             {
                 Code = countryCode,
@@ -264,10 +274,7 @@ namespace TerraVision
                 Timezones = countryTimezones.Split(','),
                 Lat = countryLat,
                 Lng = countryLng,
-                TemperatureUnit = temperatureUnit,
-                SpeedUnit = speedUnit,
-                CurrentTemperature = currentTemperature,
-                CurrentWindSpeed = currentWindSpeed
+                CurrentWeather = weather
             };
 
             return newCountry;
@@ -324,6 +331,14 @@ namespace TerraVision
             var currentTemperature = Convert.ToDouble(countryWeatherData["current"]["temperature_2m"]);
             var currentWindSpeed = Convert.ToDouble(countryWeatherData["current"]["wind_speed_10m"]);
 
+            var weather = new Weather
+            {
+                TemperatureUnit = temperatureUnit,
+                SpeedUnit = speedUnit,
+                CurrentTemperature = currentTemperature,
+                CurrentWindSpeed = currentWindSpeed
+            };
+            
             var newCountry = new Country()
             {
                 Code = countryCode,
@@ -340,10 +355,7 @@ namespace TerraVision
                 Timezones = countryTimezones.Split(','),
                 Lat = countryLat,
                 Lng = countryLng,
-                TemperatureUnit = temperatureUnit,
-                SpeedUnit = speedUnit,
-                CurrentTemperature = currentTemperature,
-                CurrentWindSpeed = currentWindSpeed
+                CurrentWeather = weather
             };
             
             var users = LoadUsers();

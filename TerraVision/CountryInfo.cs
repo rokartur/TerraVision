@@ -139,10 +139,10 @@ namespace TerraVision
             _subregionTextBox.Text = country.Subregion;
             _timezonesTextBox.Text = string.Join(", ", country.Timezones);
             _coordinatesTextBox.Text = $"Lat: {country.Lat}, Lng: {country.Lng}";
-            _temperatureUnitTextBox.Text = country.TemperatureUnit;
-            _speedUnitTextBox.Text = country.SpeedUnit;
-            _currentTemperatureTextBox.Text = country.CurrentTemperature.ToString(CultureInfo.CurrentCulture);
-            _currentWindSpeedTextBox.Text = country.CurrentWindSpeed.ToString(CultureInfo.CurrentCulture);
+            _temperatureUnitTextBox.Text = country.CurrentWeather.TemperatureUnit;
+            _speedUnitTextBox.Text = country.CurrentWeather.SpeedUnit;
+            _currentTemperatureTextBox.Text = country.CurrentWeather.CurrentTemperature.ToString(CultureInfo.CurrentCulture);
+            _currentWindSpeedTextBox.Text = country.CurrentWeather.CurrentWindSpeed.ToString(CultureInfo.CurrentCulture);
         }
     }
 }
